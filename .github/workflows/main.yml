@@ -1,5 +1,8 @@
+
 name: Unzip
 on: workflow_dispatch
+permissions:
+  contents: write
 jobs:
   unzip:
     runs-on: ubuntu-latest
@@ -7,8 +10,10 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           unzip -o "*.zip" || true
-          find . -name "*.zip" -exec unzip -o {} \;
-      - run: rm -rf *.zip project-bolt* __MACOSX
+          unzip -o "project-bolt-sb-*.zip" || true
+          find . -maxdepth 3 -type d -name "project-bolt*" -exec cp -r {}/* . \; 2>/dev/null || true
+          ls -la
+      - run: rm -rf *.zip project-bolt* __MACOSX || true
       - run: |
           git config user.name "bot"
           git config user.email "bot@bot.com"
